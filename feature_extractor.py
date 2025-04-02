@@ -50,6 +50,7 @@ def get_aparc(files_in, path_out):
             cmd = f'aparcstats2table --hemi {hemi} --subjects {files_in} --parc aparc --tablefile {file_out} --meas {meas}'
             os.system(cmd)
 
+#TODO: The merging is incorrect. Check!
 def merge_all(path_out):
     output_file = os.path.join(path_out, 'combined_data.csv')
     if os.path.exists(output_file):
@@ -79,6 +80,6 @@ def main(path_in, path_out):
     merge_all(path_out)
 
 
-path_in = '/home/mireia/Desktop/01_PROJECTS/03_Neuroscore/01_DATA/FS/'
-path_out = '/home/mireia/Desktop/01_PROJECTS/03_Neuroscore/01_DATA/STRUCT/'
+path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
+path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
 main(path_in, path_out)
