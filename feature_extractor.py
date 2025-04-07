@@ -62,12 +62,36 @@ def merge_all(path_out):
 
     for file in txt_files:
         file_path = os.path.join(path_out, file)
-        df = pd.read_csv(file_path, sep='\t')  # Change 'sep' if needed
+        df = pd.read_csv(file_path, sep='\t')
+        df.index = df.iloc[:, 0]
+        df = df.drop(df.columns[0], axis=1)
         dfs.append(df)
-    combined_df = pd.concat(dfs, axis=1)
+        
+    # Concatenate DataFrames aligning on their indices
+    combined_df = pd.concat(dfs, axis=1, join='outer')
+    # Remove duplicate columns if any
     combined_df = combined_df.loc[:, ~combined_df.columns.duplicated(keep='last')]
-    combined_df.to_csv(output_file, index=False)
+    #combined_df.to_csv(output_file, index=True)
+    combined_df.to_csv(output_file, sep=',', decimal='.', index=True)
     print(f"Combined CSV file saved at: {output_file}")
+    
+# def merge_all(path_out):
+#     output_file = os.path.join(path_out, 'combined_data.csv')
+#     if os.path.exists(output_file):
+#         print('Merging already done!')
+#         return
+
+#     txt_files = [f for f in os.listdir(path_out) if f.endswith('.txt')]
+#     dfs = []
+
+#     for file in txt_files:
+#         file_path = os.path.join(path_out, file)
+#         df = pd.read_csv(file_path, sep='\t')  # Change 'sep' if needed
+#         dfs.append(df)
+#     combined_df = pd.concat(dfs, axis=1)
+#     combined_df = combined_df.loc[:, ~combined_df.columns.duplicated(keep='last')]
+#     combined_df.to_csv(output_file, index=False)
+#     print(f"Combined CSV file saved at: {output_file}")
     
 def main(path_in, path_out):
     os.environ["SUBJECTS_DIR"] = path_in
@@ -80,6 +104,6 @@ def main(path_in, path_out):
     merge_all(path_out)
 
 
-path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
+path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS'
 path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
 main(path_in, path_out)
