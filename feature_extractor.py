@@ -58,8 +58,9 @@ def get_surface_area(surface_file):
     try:
         result = subprocess.run(['mris_info', surface_file], capture_output=True, text=True, check=True)
         for line in result.stdout.split('\n'):
-            if 'total area' in line.lower():
-                return float(line.split()[-2])  # Extract the numerical value
+            if 'total_area' in line:
+                res = float(line.split()[-1])
+                return res  # Extract the numerical value
     except Exception as e:
         print(f"Error processing {surface_file}: {e}")
     return 0.0
@@ -71,14 +72,17 @@ def save_surface_areas_to_txt(surface_areas, output_file):
 
 def get_pial(files_in, path_in, path_out):
     surface_areas = {}
+    cnt = 0
 
     for file_in in files_in:
+        print('Processing pial, on {}%'.format(str(round(cnt/len(files_in)*100, 2))))
         _, subject = os.path.split(file_in)
         total_area = 0.0
         for hemi in ['lh', 'rh']:
             subject_path = os.path.join(path_in, file_in, 'surf', f'{hemi}.pial.T1')
             total_area += get_surface_area(subject_path)
         surface_areas[subject] = total_area
+        cnt +=1
         
     output_file = os.path.join(path_out, 'total_pial_area.txt')    
     save_surface_areas_to_txt(surface_areas, output_file)
