@@ -76,7 +76,7 @@ def get_pial(files_in, path_out):
         _, subject = os.path.split(file_in)
         total_area = 0.0
         for hemi in ['lh', 'rh']:
-            subject_path = os.path.join(file_in, 'surf', f'{hemi}.pial')
+            subject_path = os.path.join(file_in, 'surf', f'{hemi}.pial.T1')
             total_area += get_surface_area(subject_path)
         surface_areas[subject] = total_area
         
