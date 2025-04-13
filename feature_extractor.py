@@ -1,5 +1,7 @@
 import os
+import subprocess
 import pandas as pd
+
 
 def get_files(path_in, log_file):
     # List all the subject directories
@@ -9,7 +11,9 @@ def get_files(path_in, log_file):
     required_files = {
         'aseg': 'stats/aseg.stats',
         'aparc_lh': 'stats/lh.aparc.stats',
-        'aparc_rh': 'stats/rh.aparc.stats'
+        'aparc_rh': 'stats/rh.aparc.stats', 
+        'lh.pial.T1': 'surf/lh.pial.T1',
+        'rh.pial.T1': 'surf/rh.pial.T1',
     }
 
     # List to hold valid subjects
@@ -24,7 +28,7 @@ def get_files(path_in, log_file):
             missing = False
             
             # Check if all the required files exist for this subject
-            for file_key, file_path in required_files.items():
+            for _, file_path in required_files.items():
                 full_file_path = os.path.join(subject_path, file_path)
                 if not os.path.exists(full_file_path):
                     missing = True
@@ -49,6 +53,38 @@ def get_aparc(files_in, path_out):
             file_out = os.path.join(path_out, f'aparc_{meas}_{hemi}.txt')
             cmd = f'aparcstats2table --hemi {hemi} --subjects {files_in} --parc aparc --tablefile {file_out} --meas {meas}'
             os.system(cmd)
+
+def get_surface_area(surface_file):
+    try:
+        result = subprocess.run(['mris_info', surface_file], capture_output=True, text=True, check=True)
+        for line in result.stdout.split('\n'):
+            if 'total area' in line.lower():
+                return float(line.split()[-2])  # Extract the numerical value
+    except Exception as e:
+        print(f"Error processing {surface_file}: {e}")
+    return 0.0
+
+def save_surface_areas_to_txt(surface_areas, output_file):
+    with open(output_file, 'w') as f:
+        for subject, area in surface_areas.items():
+            f.write(f"{subject}\t{area:.2f}\n")
+
+def get_pial(files_in, path_out):
+    surface_areas = {}
+
+    for file_in in files_in:
+        _, subject = os.path.split(file_in)
+        total_area = 0.0
+        for hemi in ['lh', 'rh']:
+            subject_path = os.path.join(file_in, 'surf', f'{hemi}.pial')
+            total_area += get_surface_area(subject_path)
+        surface_areas[subject] = total_area
+        
+    output_file = os.path.join(path_out, 'total_pial_area.txt')    
+    save_surface_areas_to_txt(surface_areas, output_file)
+        
+    return surface_areas
+    
 
 def merge_all(path_out):
     output_file = os.path.join(path_out, 'combined_data.csv')
@@ -80,6 +116,7 @@ def main(path_in, path_out):
     
     get_aseg(files_in, path_out)
     get_aparc(files_in, path_out)
+    get_pial(files_in, path_out)
     merge_all(path_out)
 
 
