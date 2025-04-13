@@ -129,3 +129,13 @@ def main(path_in, path_out):
 path_in = '/home/mireia/Desktop/01_PROJECTS/05_Isa/02_FS_7.4/RESULTS'
 path_out = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL'
 main(path_in, path_out)
+
+
+# df1 = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL/combined_data.csv'
+# df2 = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL/Site.csv'
+# df1 = pd.read_csv(df1)
+# df2 = pd.read_csv(df2)
+# df1['Subject_ID'] = df1['Subject_ID'].apply(lambda x: '-'.join(x.split('-')[1:3]))
+# df2['Subject_ID'] = df2['Subject_ID'].str.strip()
+# merged = pd.merge(df1, df2, on='Subject_ID', how='inner')
+# merged.to_csv('/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL/final_output.csv', index=False)
