@@ -67,6 +67,8 @@ def get_surface_area(surface_file):
 
 def save_surface_areas_to_txt(surface_areas, output_file):
     with open(output_file, 'w') as f:
+        f.write("subject\tpial\n")
+        
         for subject, area in surface_areas.items():
             f.write(f"{subject}\t{area:.2f}\n")
 
