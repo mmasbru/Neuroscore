@@ -69,14 +69,14 @@ def save_surface_areas_to_txt(surface_areas, output_file):
         for subject, area in surface_areas.items():
             f.write(f"{subject}\t{area:.2f}\n")
 
-def get_pial(files_in, path_out):
+def get_pial(files_in, path_in, path_out):
     surface_areas = {}
 
     for file_in in files_in:
         _, subject = os.path.split(file_in)
         total_area = 0.0
         for hemi in ['lh', 'rh']:
-            subject_path = os.path.join(file_in, 'surf', f'{hemi}.pial.T1')
+            subject_path = os.path.join(path_in, file_in, 'surf', f'{hemi}.pial.T1')
             total_area += get_surface_area(subject_path)
         surface_areas[subject] = total_area
         
@@ -116,10 +116,10 @@ def main(path_in, path_out):
     
     get_aseg(files_in, path_out)
     get_aparc(files_in, path_out)
-    get_pial(files_in, path_out)
+    get_pial(files, path_in, path_out)
     merge_all(path_out)
 
 
-path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS'
-path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
+path_in = '/home/mireia/Desktop/01_PROJECTS/05_Isa/02_FS_7.4/RESULTS'
+path_out = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL'
 main(path_in, path_out)
