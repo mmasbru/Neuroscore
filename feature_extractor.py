@@ -131,12 +131,12 @@ path_out = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL'
 main(path_in, path_out)
 
 
-# df1 = '/home/id05315/Desktop/03_Data/clemente/cov_for_combat.csv'
-# df2 = '/home/id05315/Desktop/03_Data/clemente/final_output.csv'
+# df1 = '/home/id05315/Desktop/03_Data/clemente/Hippocampal_subfields.csv'
+# df2 = '/home/id05315/Desktop/03_Data/clemente/final_output_3.csv'
 # df1 = pd.read_csv(df1)
 # df2 = pd.read_csv(df2)
 # df1['Subject_ID'] = df1['Subject_ID'].apply(lambda x: '-'.join(x.split('-')[1:3]))
 # df2['Subject_ID'] = df2['Subject_ID'].str.strip()
 # merged = pd.merge(df1, df2, on='Subject_ID', how='inner')
 
-# merged.to_csv('/home/id05315/Desktop/03_Data/clemente/final_output_2.csv', index=False)
+# merged.to_csv('/home/id05315/Desktop/03_Data/clemente/final_output_4.csv', index=False)
