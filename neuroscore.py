@@ -142,6 +142,7 @@ def main(path_fs, path_tab, wd_beta, log_path, path_demo):
         residuals_df = pd.concat(residuals_dict, axis=1)
         zscore_residuals_imp = zscore_and_impute(residuals_df)
         neuroscore = compute_neuroscore(zscore_residuals_imp, beta)
+        neuroscore = pd.concat([df, neuroscore], axis=1)
 
         # Log successful completion
         logging.info("Execution completed successfully.")

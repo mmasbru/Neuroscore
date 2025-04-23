@@ -1,11 +1,24 @@
-import PySimpleGUI as sg 
-import pandas as pd
+import os
 import logging
-from feature_extractor import main_features
-from feature_extractor import regress_out_covariates, zscore_and_impute, compute_neuroscore
+import pandas as pd
+import PySimpleGUI as sg
+from feature_extractor import main
 
+# --- Helper: setup logging (reuse existing logic) ---
+def setup_logging(log_path):
+    log_directory = os.path.dirname(log_path)
+    if log_directory and not os.path.exists(log_directory):
+        os.makedirs(log_directory)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_path),
+            logging.StreamHandler()
+        ]
+    )
 
-# --- GUI layout
+# --- GUI Layout ---
 layout = [
     [sg.Text("FreeSurfer dir"), sg.Input(key="path_fs"), sg.FolderBrowse()],
     [sg.Text("STRUCT dir"),      sg.Input(key="path_tab"), sg.FolderBrowse()],
@@ -16,37 +29,38 @@ layout = [
     [sg.Multiline(size=(80,20), key="output", autoscroll=True)]
 ]
 
-window = sg.Window("Neuroscore GUI", layout)  # turn0search4
+window = sg.Window("Neuroscore GUI", layout)
 
+# --- Event Loop ---
 while True:
     event, values = window.read()
     if event in (sg.WIN_CLOSED, "Exit"):
         break
+
     if event == "Run":
-        # Setup logging
-        logging.basicConfig(filename=values["log_path"], level=logging.INFO)
-        window["output"].print("Starting neuroscore computation...")
+        # Setup logging to file and console
+        setup_logging(values["log_path"] or "neuroscore.log")
+        window["output"].print("Starting neuroscore pipeline...")
+
         try:
-            # 1) extract features + merge with demo
-            df = main_features(values["path_fs"], values["path_tab"], values["path_demo"] or None)
-            window["output"].print("Features extracted:", df.shape)
-            # 2) regress out covariates
-            dependent = [c for c in df.columns if c not in ["Age","Sex"]]
-            res = regress_out_covariates(df.set_index("ID"), dependent)
-            residuals_df = pd.concat(res, axis=1)
-            window["output"].print("Covariates regressed out")
-            # 3) z-score & impute
-            zimp = zscore_and_impute(residuals_df)
-            window["output"].print("Data z-scored & imputed")
-            # 4) load beta & compute neuroscore
-            beta = pd.read_csv(values["wd_beta"], index_col=0).astype(float).fillna(0)
-            neuro = compute_neuroscore(zimp, beta)
-            window["output"].print("Neuroscore computed:\n", neuro.head().to_string())
-            # save results
-            out_csv = values["path_tab"] + "/neuroscore_result.csv"
-            neuro.to_csv(out_csv)
+            # Call main() directly
+            neuroscore = main(
+                path_fs   = values["path_fs"],
+                path_tab  = values["path_tab"],
+                wd_beta   = values["wd_beta"],
+                log_path  = values["log_path"],
+                path_demo = values["path_demo"] or None
+            )
+
+            # Display results
+            window["output"].print("Neuroscore computed:\n", neuroscore.head().to_string())
+
+            # Save results to CSV in STRUCT directory
+            out_csv = os.path.join(values["path_tab"], "neuroscore_result.csv")
+            neuroscore.to_csv(out_csv)
             window["output"].print(f"Results saved to {out_csv}")
+
         except Exception as e:
-            window["output"].print("ERROR:", e)
+            window["output"].print("ERROR during execution:\n", e)
 
 window.close()
