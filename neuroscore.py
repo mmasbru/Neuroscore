@@ -47,6 +47,10 @@ def preprocess_data(df, covariates=['Age', 'Sex']):
     try:
         for col in covariates:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+            
+            cols_all_zero = df.columns[(df == 0).all()]
+            df = df.drop(columns=cols_all_zero)
+            
     except KeyError as e:
         logging.error(f"Missing expected column for preprocessing: {e}")
         raise
@@ -118,7 +122,7 @@ def main(wd, wd_beta, log_path):
 
     try:
         # Load data
-        df = pd.read_csv(wd, delimiter=';')
+        df = pd.read_csv(wd, delimiter=',')
         beta = pd.read_csv(wd_beta)
 
         # Check for required columns
@@ -146,3 +150,7 @@ def main(wd, wd_beta, log_path):
         logging.error(f"Error during execution: {e}")
         raise
 
+# wd = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT/struct_demo.csv'  # Replace with your actual data path
+# wd_beta = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/betas.csv'  # Replace with your actual beta path
+# log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'  # Replace with your actual log path
+# neuroscore = main(wd, wd_beta, log_path)

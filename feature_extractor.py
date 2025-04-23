@@ -47,7 +47,7 @@ def get_aseg(files_in, path_out):
 
 def get_aparc(files_in, path_out):
     #aparc_meas = ['volume', 'area', 'thickness', 'thicknessstd','meancurv', 'foldind', 'curvind']
-    aparc_meas = ['volume', 'area', 'thickness', 'thicknessstd']
+    aparc_meas = ['volume']#,'area'], 'thickness', 'thicknessstd']
     hemis = ['rh', 'lh']
     for meas in aparc_meas:
         for hemi in hemis:
@@ -99,7 +99,7 @@ def merge_all(path_out):
         print('Merging already done!')
         return
 
-    txt_files = [f for f in os.listdir(path_out) if f.endswith('.txt')]
+    txt_files = [f for f in os.listdir(path_out) if f.endswith('.txt') and 'log' not in f]
     dfs = []
 
     for file in txt_files:
@@ -113,9 +113,10 @@ def merge_all(path_out):
     combined_df = combined_df.loc[:, ~combined_df.columns.duplicated(keep='last')]
     combined_df.to_csv(output_file, sep=',', decimal='.', index=True)
     print(f"Combined CSV file saved at: {output_file}")
+    return(combined_df)
     
     
-def main(path_in, path_out):
+def main_features(path_in, path_out, path_demo= None):
     os.environ["SUBJECTS_DIR"] = path_in
     log_file = os.path.join(path_out, 'log.txt')
     files = get_files(path_in, log_file)
@@ -124,20 +125,17 @@ def main(path_in, path_out):
     get_aseg(files_in, path_out)
     get_aparc(files_in, path_out)
     # get_pial(files, path_in, path_out)
-    merge_all(path_out)
-
+    
+    df = merge_all(path_out)
+    
+    if path_demo:
+        demo_df = pd.read_csv(path_demo, sep=',', index_col=0)
+        df = pd.concat([demo_df, df], axis=1, join='outer')
+        df.to_csv(os.path.join(path_out, 'struct_demo.csv'), sep=',', decimal='.', index=True)
+        
+    return(df)
 
 path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
 path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT/'
-main(path_in, path_out)
-
-
-# df1 = '/home/id05315/Desktop/03_Data/clemente/Hippocampal_subfields.csv'
-# df2 = '/home/id05315/Desktop/03_Data/clemente/final_output_3.csv'
-# df1 = pd.read_csv(df1)
-# df2 = pd.read_csv(df2)
-# df1['Subject_ID'] = df1['Subject_ID'].apply(lambda x: '-'.join(x.split('-')[1:3]))
-# df2['Subject_ID'] = df2['Subject_ID'].str.strip()
-# merged = pd.merge(df1, df2, on='Subject_ID', how='inner')
-
-# merged.to_csv('/home/id05315/Desktop/03_Data/clemente/final_output_4.csv', index=False)
+path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
+main_features(path_in, path_out, path_demo)
