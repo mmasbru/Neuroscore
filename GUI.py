@@ -2,7 +2,7 @@ import os
 import logging
 import pandas as pd
 import PySimpleGUI as sg
-from feature_extractor import main
+from neuroscore import main
 
 # --- Helper: setup logging (reuse existing logic) ---
 def setup_logging(log_path):
