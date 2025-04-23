@@ -12,8 +12,8 @@ def get_files(path_in, log_file):
         'aseg': 'stats/aseg.stats',
         'aparc_lh': 'stats/lh.aparc.stats',
         'aparc_rh': 'stats/rh.aparc.stats', 
-        'lh.pial.T1': 'surf/lh.pial.T1',
-        'rh.pial.T1': 'surf/rh.pial.T1',
+        # 'lh.pial.T1': 'surf/lh.pial.T1',
+        # 'rh.pial.T1': 'surf/rh.pial.T1',
     }
 
     # List to hold valid subjects
@@ -46,7 +46,8 @@ def get_aseg(files_in, path_out):
     os.system(cmd)
 
 def get_aparc(files_in, path_out):
-    aparc_meas = ['volume', 'area', 'thickness', 'thicknessstd','meancurv', 'foldind', 'curvind']
+    #aparc_meas = ['volume', 'area', 'thickness', 'thicknessstd','meancurv', 'foldind', 'curvind']
+    aparc_meas = ['volume', 'area', 'thickness', 'thicknessstd']
     hemis = ['rh', 'lh']
     for meas in aparc_meas:
         for hemi in hemis:
@@ -122,12 +123,12 @@ def main(path_in, path_out):
     
     get_aseg(files_in, path_out)
     get_aparc(files_in, path_out)
-    get_pial(files, path_in, path_out)
+    # get_pial(files, path_in, path_out)
     merge_all(path_out)
 
 
-path_in = '/home/mireia/Desktop/01_PROJECTS/05_Isa/02_FS_7.4/RESULTS'
-path_out = '/home/mireia/Desktop/01_PROJECTS/05_Isa/03_STRUCTURAL'
+path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
+path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT/'
 main(path_in, path_out)
 
 
