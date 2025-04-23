@@ -135,7 +135,7 @@ def main_features(path_in, path_out, path_demo= None):
         
     return(df)
 
-path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
-path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT/'
-path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
-main_features(path_in, path_out, path_demo)
+# path_in = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS/'
+# path_out = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT/'
+# path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
+# main_features(path_in, path_out, path_demo)
