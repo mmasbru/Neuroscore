@@ -159,9 +159,9 @@ def main(path_fs, path_tab, wd_beta, log_path, path_demo):
 # log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'  # Replace with your actual log path
 # neuroscore = main(wd, wd_beta, log_path)
 
-path_fs = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS'
-path_tab = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
-wd_beta = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/betas.csv'
-log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'
-path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
-neuroscore = main(path_fs, path_tab, wd_beta, log_path, path_demo)
+# path_fs = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS'
+# path_tab = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
+# wd_beta = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/betas.csv'
+# log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'
+# path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
+# neuroscore = main(path_fs, path_tab, wd_beta, log_path, path_demo)

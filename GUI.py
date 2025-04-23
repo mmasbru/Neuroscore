@@ -1,7 +1,9 @@
 import PySimpleGUI as sg 
 import pandas as pd
 import logging
-from feature_extractor import main_features, regress_out_covariates, zscore_and_impute, compute_neuroscore
+from feature_extractor import main_features
+from feature_extractor import regress_out_covariates, zscore_and_impute, compute_neuroscore
+
 
 # --- GUI layout
 layout = [
