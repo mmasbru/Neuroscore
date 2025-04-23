@@ -1,3 +1,4 @@
+from feature_extractor import main_features 
 from sklearn.impute import KNNImputer
 import statsmodels.api as sm
 import pandas as pd
@@ -113,7 +114,7 @@ def compute_neuroscore(zscore_residuals_imp, beta):
     return neuroscore
 
 # Main execution
-def main(wd, wd_beta, log_path):
+def main(path_fs, path_tab, wd_beta, log_path, path_demo):
     # Set up logging
     setup_logging(log_path)
 
@@ -122,11 +123,14 @@ def main(wd, wd_beta, log_path):
 
     try:
         # Load data
-        df = pd.read_csv(wd, delimiter=',')
-        beta = pd.read_csv(wd_beta)
+        df = main_features(path_fs, path_tab, path_demo)
+        df.index.name = 'ID'
+        df = df.reset_index()
+        # df = pd.read_csv(wd, delimiter=',')
+        beta = pd.read_csv(wd_beta, index_col=0)
 
         # Check for required columns
-        required_columns = ['ID', 'Sex', 'Age']
+        required_columns = ['ID','Sex', 'Age']
         check_columns(df, required_columns)
 
         # Handle redundant IDs and set index
@@ -154,3 +158,10 @@ def main(wd, wd_beta, log_path):
 # wd_beta = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/betas.csv'  # Replace with your actual beta path
 # log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'  # Replace with your actual log path
 # neuroscore = main(wd, wd_beta, log_path)
+
+path_fs = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/FS'
+path_tab = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/STRUCT'
+wd_beta = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/betas.csv'
+log_path = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/neuroscore.log'
+path_demo = '/home/mireia/Desktop/01_PROJECTS/05_Espectro/demo.csv'
+neuroscore = main(path_fs, path_tab, wd_beta, log_path, path_demo)
